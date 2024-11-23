@@ -75,28 +75,7 @@ class Predictor:
         else:
             temperature = [temperature]
 
-        segments, info = list(model.transcribe(str(audio),
-                                               language=language,
-                                               task="transcribe",
-                                               batch_size=16,
-                                               beam_size=beam_size,
-                                               best_of=best_of,
-                                               patience=patience,
-                                               length_penalty=length_penalty,
-                                               temperature=temperature,
-                                               compression_ratio_threshold=compression_ratio_threshold,
-                                               log_prob_threshold=logprob_threshold,
-                                               no_speech_threshold=no_speech_threshold,
-                                               condition_on_previous_text=condition_on_previous_text,
-                                               initial_prompt=initial_prompt,
-                                               prefix=None,
-                                               suppress_blank=True,
-                                               suppress_tokens=[-1],
-                                               without_timestamps=False,
-                                               max_initial_timestamp=1.0,
-                                               word_timestamps=word_timestamps,
-                                               vad_filter=enable_vad
-                                               ))
+        segments, info = list(model.transcribe(str(audio), language=language, task="transcribe", beam_size=5, word_timestamps=True, batch_size=16))
 
         segments = list(segments)
 
