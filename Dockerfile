@@ -12,24 +12,11 @@ WORKDIR /
 # Update and install required system packages
 RUN apt-get update -y && \
     apt-get upgrade -y && \
-    apt-get install --yes --no-install-recommends \
-    sudo \
-    ca-certificates \
-    git \
-    wget \
-    curl \
-    bash \
-    libgl1 \
-    libx11-6 \
-    software-properties-common \
-    ffmpeg \
-    build-essential \
-    python3.10 \
-    python3.10-venv \
-    python3-pip && \
+    apt-get install --yes --no-install-recommends sudo ca-certificates git wget curl bash libgl1 libx11-6 software-properties-common ffmpeg build-essential -y &&\
     apt-get autoremove -y && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/*
+
 
 # Add the deadsnakes PPA and install Python 3.10
 RUN add-apt-repository ppa:deadsnakes/ppa -y && \
