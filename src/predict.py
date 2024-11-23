@@ -131,7 +131,7 @@ def serialize_segments(transcript):
         "no_speech_prob": segment.no_speech_prob,
         "words": [
             {
-                "word": float(word.word),
+                "word": word.word,
                 "start": float(word.start),
                 "end": float(word.end)
             }
