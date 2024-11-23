@@ -31,14 +31,22 @@ RUN apt-get update -y && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/*
 
-# Set Python 3.10 as default
-RUN ln -sf /usr/bin/python3.10 /usr/bin/python && \
-    ln -sf /usr/bin/python3.10 /usr/bin/python3
-
-# Install Python dependencies
+# Add the deadsnakes PPA and install Python 3.10
+RUN add-apt-repository ppa:deadsnakes/ppa -y && \
+    apt-get install python3.10-dev python3.10-venv python3-pip -y --no-install-recommends && \
+    ln -s /usr/bin/python3.10 /usr/bin/python && \
+    rm /usr/bin/python3 && \
+    ln -s /usr/bin/python3.10 /usr/bin/python3 && \
+    apt-get autoremove -y && \
+    apt-get clean -y && \
+    rm -rf /var/lib/apt/lists/*
+    
+# Install Python dependencies (Worker Template)
 COPY builder/requirements.txt /requirements.txt
-RUN pip install --upgrade pip && \
-    pip install -r /requirements.txt --no-cache-dir
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install --upgrade pip && \
+    pip install -r /requirements.txt --no-cache-dir && \
+    rm /requirements.txt
 
 # Copy and run script to fetch models
 COPY builder/fetch_models.py /fetch_models.py
