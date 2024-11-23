@@ -15,9 +15,7 @@ WORKDIR /
 # Update and upgrade the system packages (Worker Template)
 RUN apt-get update -y && \
     apt-get upgrade -y && \
-    apt-get install --yes --no-install-recommends \
-    sudo ca-certificates git wget curl bash libgl1 libx11-6 software-properties-common ffmpeg build-essential \
-    libcublas-11 libcublas-dev-11 && \
+    apt-get install --yes --no-install-recommends sudo ca-certificates git wget curl bash libgl1 libx11-6 software-properties-common ffmpeg build-essential libcublas11 -y &&\
     apt-get autoremove -y && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/*
