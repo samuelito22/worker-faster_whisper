@@ -1,5 +1,5 @@
-# Use NVIDIA CUDA image with CUDA 12 and cuDNN 9
-FROM nvidia/cuda:12.2.0-cudnn9-runtime-ubuntu20.04
+# Use NVIDIA CUDA image with CUDA 12.6 and cuDNN 9
+FROM nvidia/cuda:12.6.2-cudnn-runtime-ubuntu20.04
 
 # Set shell and noninteractive environment variables
 SHELL ["/bin/bash", "-c"]
