@@ -17,7 +17,6 @@ RUN apt-get update -y && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/*
 
-
 # Add the deadsnakes PPA and install Python 3.10
 RUN add-apt-repository ppa:deadsnakes/ppa -y && \
     apt-get install python3.10-dev python3.10-venv python3-pip -y --no-install-recommends && \
@@ -27,6 +26,11 @@ RUN add-apt-repository ppa:deadsnakes/ppa -y && \
     apt-get autoremove -y && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/*
+
+# Download and install pip
+RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+    python get-pip.py && \
+    rm get-pip.py
     
 # Install Python dependencies (Worker Template)
 COPY builder/requirements.txt /requirements.txt
