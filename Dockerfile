@@ -1,13 +1,8 @@
 # Use specific version of nvidia cuda image
-FROM nvidia/cuda:11.7.1-cudnn8-runtime-ubuntu20.04
+FROM python:3.11.4-slim-bullseye 
 
 # Remove any third-party apt sources to avoid issues with expiring keys.
 RUN rm -f /etc/apt/sources.list.d/*.list
-
-# Set shell and noninteractive environment variables
-SHELL ["/bin/bash", "-c"]
-ENV DEBIAN_FRONTEND=noninteractive
-ENV SHELL=/bin/bash
 
 # Set working directory
 WORKDIR /
@@ -15,7 +10,7 @@ WORKDIR /
 # Update and upgrade the system packages (Worker Template)
 RUN apt-get update -y && \
     apt-get upgrade -y && \
-    apt-get install --yes --no-install-recommends sudo ca-certificates git wget curl bash libgl1 libx11-6 software-properties-common ffmpeg build-essential libcublas11 -y &&\
+    apt-get install --yes --no-install-recommends sudo ca-certificates git wget curl bash libgl1 libx11-6 software-properties-common ffmpeg build-essential -y &&\
     apt-get autoremove -y && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/*
