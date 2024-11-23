@@ -104,7 +104,7 @@ class Predictor:
             for segment in segments:
                 for word in segment.words:
                     word_timestamps.append({
-                        "word": word.word,
+                        "word": word.word.strip(),
                         "start": float(word.start),
                         "end": float(word.end),
                     })
@@ -123,7 +123,7 @@ def serialize_segments(transcript):
         "seek": segment.seek,
         "start": float(segment.start),
         "end": float(segment.end),
-        "text": segment.text,
+        "text": segment.text.strip(),
         "tokens": segment.tokens,
         "temperature": segment.temperature,
         "avg_logprob": segment.avg_logprob,
@@ -131,7 +131,7 @@ def serialize_segments(transcript):
         "no_speech_prob": segment.no_speech_prob,
         "words": [
             {
-                "word": word.word,
+                "word": word.word.strip(),
                 "start": float(word.start),
                 "end": float(word.end)
             }
