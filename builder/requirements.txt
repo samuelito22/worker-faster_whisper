@@ -1,3 +1,3 @@
-runpod~=1.7.0
-
-faster-whisper==0.10.0
+runpod==1.7.5
+faster-whisper @ https://github.com/SYSTRAN/faster-whisper/archive/refs/heads/master.tar.gz
+ctranslate2==4.4.0

@@ -9,7 +9,7 @@ import numpy as np
 
 from runpod.serverless.utils import rp_cuda
 
-from faster_whisper import WhisperModel
+from faster_whisper import WhisperModel, BatchedInferencePipeline
 from faster_whisper.utils import format_timestamp
 
 
@@ -22,15 +22,17 @@ class Predictor:
     def load_model(self, model_name):
         """ Load the model from the weights folder. """
         loaded_model = WhisperModel(
-            model_name,
+            model_size_or_path=model_name,
             device="cuda" if rp_cuda.is_available() else "cpu",
             compute_type="float16" if rp_cuda.is_available() else "int8")
+        
+        batched_model = BatchedInferencePipeline(model=loaded_model)
 
-        return model_name, loaded_model
+        return model_name, batched_model
 
     def setup(self):
         """Load the model into memory to make running multiple predictions efficient"""
-        model_names = ["tiny", "base", "small", "medium", "large-v1", "large-v2", "large-v3"]
+        model_names = ["deepdml/faster-whisper-large-v3-turbo-ct2", "base"]
         with ThreadPoolExecutor() as executor:
             for model_name, model in executor.map(self.load_model, model_names):
                 if model_name is not None:
@@ -39,7 +41,7 @@ class Predictor:
     def predict(
         self,
         audio,
-        model_name="base",
+        model_name="deepdml/faster-whisper-large-v3-turbo-ct2",
         transcription="plain_text",
         translate=False,
         translation="plain_text",
@@ -76,6 +78,7 @@ class Predictor:
         segments, info = list(model.transcribe(str(audio),
                                                language=language,
                                                task="transcribe",
+                                               batch_size=16,
                                                beam_size=beam_size,
                                                best_of=best_of,
                                                patience=patience,
@@ -123,10 +126,10 @@ class Predictor:
                 for word in segment.words:
                     word_timestamps.append({
                         "word": word.word,
-                        "start": word.start,
-                        "end": word.end,
+                        "start": float(word.start),
+                        "end": float(word.end),
                     })
-            results["word_timestamps"] = word_timestamps
+            results["words"] = word_timestamps
 
 
         return results
@@ -139,14 +142,22 @@ def serialize_segments(transcript):
     return [{
         "id": segment.id,
         "seek": segment.seek,
-        "start": segment.start,
-        "end": segment.end,
+        "start": float(segment.start),
+        "end": float(segment.end),
         "text": segment.text,
         "tokens": segment.tokens,
         "temperature": segment.temperature,
         "avg_logprob": segment.avg_logprob,
         "compression_ratio": segment.compression_ratio,
-        "no_speech_prob": segment.no_speech_prob
+        "no_speech_prob": segment.no_speech_prob,
+        "words": [
+            {
+                "word": float(word.word),
+                "start": float(word.start),
+                "end": float(word.end)
+            }
+            for word in segment.words
+        ]
     } for segment in transcript]
 
 
